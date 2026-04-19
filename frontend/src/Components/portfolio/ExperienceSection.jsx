@@ -3,18 +3,28 @@ import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield } from 'lucid
 
 const experiences = [
   {
+    company: 'Airawat',
+    role: 'Software Developer',
+    period: 'Dec 2025 – Present',
+    icon: Zap,
+    color: 'from-purple-400 to-violet-500',
+    highlights: [
+      { title: 'AI Grievance Dashboard (Madhya Pradesh):', description: ' Shipped an LLM-integrated dashboard (OpenAI APIs) — automated 8-category classification, AI-generated summaries, and natural-language querying, cutting manual review time by ~60% for state administrators handling 50,000+ complaints/month.' },
+      { title: 'Agentic WhatsApp Chatbot (DJB):', description: ' Built an intent-aware chatbot using LLM-based classification over free-form Hinglish messages, webhook integration, and Redis session tracking — enabled 24/7 automated grievance intake and eliminated manual call-center triage for 10K+ citizens.' },
+      { title: 'Production Deployment:', description: ' Independently owned end-to-end deployment — FastAPI + Uvicorn backend, PM2-managed React frontend on bare-metal Linux — authored deployment runbooks and managed zero-downtime releases serving live government users.' }
+    ]
+  },
+  {
     company: 'Turing',
     role: 'Software Developer',
     period: 'May 2024 – June 2025',
     icon: Zap,
     color: 'from-purple-400 to-violet-500',
-
     highlights: [
-      'Worked on building a robust evaluation pipeline to train AI models using reinforcement learning',
-      'Created and containerized multi-language code execution environments using Docker for languages like C++, Python, and JavaScript, and developed microservice using Node.js.',
-      'Evaluated two AI-generated responses, analyzing their strengths, weaknesses, and correctness in terms of logic, readability, and edge-case handling.',
-      'Assessed and rated four AI-generated responses, detailing pros and cons for each and writing rubrics and reference solutions to guide the model toward generating higher-quality, correct code.',
-      'Executed and tested AI-generated code against custom-built unit tests, identified logic or syntax failures, and produced corrected implementations ensuring all tests passed successfully.'
+      { title: 'Secure Code Execution Platform:', description: ' Architected a multi-language sandbox (C++, Python, Java, TypeScript) using Docker to safely execute untrusted code submissions — reduced per-execution latency by 30–50% and eliminated host-level security incidents.' },
+      { title: 'Evaluation Pipeline:', description: ' Built Node.js services that orchestrated code-run workflows, normalized heterogeneous logs, and surfaced structured diffs — shortened benchmarking cycle time by ~40% across engineering teams.' },
+      { title: 'Result Aggregation Service:', description: ' Designed an async collection layer (Node.js + Redis) that ingested sandbox outputs from distributed workers, handled out-of-order arrivals and partial failures gracefully, and pushed batched evaluation reports via webhooks — cut reporting lag from minutes to under 10s.' },
+      { title: 'Remote-First Collaboration:', description: ' Worked fully remotely with US-based engineering and product teams — authored design briefs in Notion, conducted async code reviews across timezones, and independently owned features from spec through production deploy.' }
     ]
   },
   {
@@ -24,25 +34,22 @@ const experiences = [
     icon: TrendingUp,
     color: 'from-green-400 to-emerald-500',
     highlights: [
-      'Renewal Lead Flow Sales Funnel (Health + Motor)',
-      'Designed and implemented the Renewal Service microservice for processing renewal leads',
-      'Replaced old architecture with ITMS → RabbitMQ → Renewal Service → LMW → LMS/POS',
-      'Achieved ~40% faster lead readiness time for agents through asynchronous message handling',
-      'Built managerial dashboard using React.js, Node.js, and SQL to monitor agent performance and lead conversion rates'
+      { title: 'Renewal Pipeline Redesign:', description: ' Designed and built a unified Renewal Service that consolidated scattered renewal logic previously split across 4 loosely coupled microservices — Storage, Renewal, Middleware, and Lead Management - into a single RabbitMQ-driven pipeline for health and motor insurance. Adopted a single-consumer design to preserve strict event ordering and respect insurer-side rate limits, improving lead throughput by 30–40% across 10,000+ daily leads without overwhelming downstream insurer APIs.' },
+      { title: 'Reliability Engineering:', description: ' Implemented event-ordering guarantees with dead-letter queues and configurable retry backoffs — maintained 99.5%+ message delivery reliability across peak renewal windows.' },
+      { title: 'Operational Dashboards:', description: ' Built real-time views of agent KPIs, queue backlogs, and failure hotspots — eliminated 25% of manual reporting overhead and enabled proactive resolution before SLA breaches.' },
+      { title: 'Insurer Integration Layer:', description: ' Built adapter modules with schema-normalization contracts and test suites per insurer - reduced new insurer onboarding from weeks to 2–3 days.' }
     ]
   },
   {
     company: 'ClearTax',
     role: 'Software Engineer',
-    period: 'Jul 2022 – Feb 2023',
+    period: 'Jul 2022 – Dec 2022',
     icon: Building,
     color: 'from-blue-400 to-cyan-500',
     highlights: [
-      'Developed REST APIs in Node.js for survey and invoice processing',
-      'Reduced API response time by 20% through optimization',
-      'Built Bulk User Creation API for invoice discounting, cutting onboarding time by 30%',
-      'Optimized SQL queries and backend logic, reducing banking integration response times by 90%',
-      'Ensured fault tolerance by simulating faulty inputs and concurrency edge cases'
+      { title: 'Async Onboarding Execution:', description: ' Redesigned a blocking onboarding flow using background job handlers to decouple heavy tasks from API requests — enabled non-blocking parallel workflows and eliminated processing bottlenecks under concurrent load.' },
+      { title: 'Fault-Tolerant Onboarding:', description: ' Enforced idempotent execution with validation checkpoints and dedupe logic — eliminated duplicate records and ensured consistent state transitions across repeated attempts.' },
+      { title: 'Faster Customer Activation:', description: ' Streamlined onboarding steps and stabilized workflow state propagation, reducing onboarding turnaround time by 30% and improving enterprise activation SLAs.' }
     ]
   },
   {
@@ -52,10 +59,8 @@ const experiences = [
     icon: Shield,
     color: 'from-red-400 to-pink-500',
     highlights: [
-      'Developed deep learning pipeline for extreme low-light image enhancement using TensorFlow',
-      'Trained UNet-based CNN on the SID dataset, improving image brightness and noise reduction',
-      'Strengthened skills in Python scripting, data preprocessing, and GPU-based computation',
-      'Worked on ML-heavy project focusing on computer vision and image processing'
+      { title: 'Low-Light Enhancement Pipeline:', description: ' Built an end-to-end image enhancement pipeline in TensorFlow based on the See in the Dark (SID) paper — replaced the traditional ISP stack with an end-to-end UNet trained from scratch on the SID dataset to directly map raw dark sensor inputs to clean, well-exposed RGB outputs.' },
+      { title: 'Raw Image Preprocessing:', description: ' Built a preprocessing pipeline for raw sensor data — applying noise removal, brightness amplification, and normalization before model ingestion, ensuring the training distribution accurately reflected real-world low-light capture conditions and improving PSNR across varying darkness levels.' }
     ]
   }
 ];
@@ -97,11 +102,10 @@ export default function ExperienceSection() {
               <div
                 key={exp.company}
                 onClick={() => setCurrentIndex(index)}
-                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'bg-slate-700/50 border-l-4 border-amber-400'
-                    : 'bg-slate-800/30 hover:bg-slate-700/30 border-l-4 border-transparent hover:border-slate-600'
-                }`}
+                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${index === currentIndex
+                  ? 'bg-slate-700/50 border-l-4 border-amber-400'
+                  : 'bg-slate-800/30 hover:bg-slate-700/30 border-l-4 border-transparent hover:border-slate-600'
+                  }`}
               >
                 <div className="flex items-center space-x-4">
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${exp.color} flex items-center justify-center`}>
@@ -141,13 +145,21 @@ export default function ExperienceSection() {
                 {currentExperience.highlights.map((highlight, index) => (
                   <div
                     key={index}
-                    className="flex items-start space-x-3 animate-slideInFromRight"
+                    className="flex items-start space-x-3"
                     style={{
-                      animationDelay: `${index * 0.1}s`
+                      animationDelay: `${index * 0.1}s`,
+                      animation: isAnimating ? 'none' : 'slideInFromRight 0.6s ease-out forwards'
                     }}
                   >
                     <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-slate-300 leading-relaxed">{highlight}</p>
+                    <p className="text-slate-300 leading-relaxed">
+                      {typeof highlight === 'string' ? highlight : (
+                        <>
+                          <span className="font-semibold text-white">{highlight.title}</span>
+                          {highlight.description}
+                        </>
+                      )}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -161,13 +173,25 @@ export default function ExperienceSection() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
+                }`}
             />
           ))}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slideInFromRight {
+          from {
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
