@@ -7,7 +7,7 @@ const projects = [
     description: 'Real-time visualization of distributed job processing with retry logic, dead-letter routing, and backpressure monitoring.',
     icon: BarChart3,
     color: 'from-green-400 to-emerald-500',
-    technologies: ['Node.js', 'Redis', 'BullMQ', 'WebSockets', 'React'],
+    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker Compose'],
     features: [
       'Push jobs via REST API, watch them process in real-time',
       'Visual dead-letter queue with retry/discard controls',
@@ -20,7 +20,7 @@ const projects = [
     description: 'Self-hosted webhook inspection and replay tool with rate limiting, filtering, and delivery guarantees.',
     icon: Code,
     color: 'from-purple-400 to-violet-500',
-    technologies: ['FastAPI', 'PostgreSQL', 'Redis', 'Docker'],
+    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker'],
     features: [
       'Receive, store, and inspect incoming webhooks in real-time',
       'Replay failed deliveries with exponential backoff',
@@ -47,12 +47,12 @@ const projects = [
     description: 'Production-grade implementations of design patterns applied to real-world systems — Uber, Amazon, Zomato, and more.',
     icon: Gamepad2,
     color: 'from-red-400 to-pink-500',
-    technologies: ['C++', 'OOP', 'Strategy', 'Factory', 'Observer'],
+    technologies: ['C++', 'OOP', 'Design Patterns'],
     features: [
       'Strategy Pattern: Uber dynamic pricing, Amazon tax calculation',
       'Factory Pattern: Loan processing, cloud storage provisioning',
       'Observer Pattern: YouTube channel notifications, alert systems',
-      'Multiple other design patterns practiced along with these (See GitHub for more)'
+      'Multiple other design patterns like Singleton, Decorator, Builder etc. practiced along with these (See GitHub for more)'
     ]
   }
 ];
@@ -172,9 +172,6 @@ export default function ProjectsSection() {
                   ))}
                 </div>
               </div>
-
-              {/* Project Info */}
-
             </div>
           </div>
         </div>

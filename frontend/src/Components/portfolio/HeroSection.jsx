@@ -42,7 +42,7 @@ export default function HeroSection({ onScrollToNext }) {
             {[
               { Icon: Github, href: 'https://github.com/omkatiyar', label: 'GitHub' },
               { Icon: Linkedin, href: 'https://www.linkedin.com/in/om-katiyar-277a301ba/', label: 'LinkedIn' },
-              { Icon: Mail, href: 'mailto:omkatiyar123hash@gmail.com', label: 'Email' }
+              { Icon: Mail, href: 'https://mail.google.com/mail/?view=cm&fs=1&to=omkatiyar123hash@gmail.com', label: 'Email' }
             ].map(({ Icon, href, label }, index) => (
               <a
                 key={label}
