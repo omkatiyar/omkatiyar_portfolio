@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Code, TrendingUp, Gamepad2, BarChart3 } from 'lucide-react';
+import useTilt from './useTilt';
+import { ProjectsAmbient } from './SectionAmbient';
 
 const projects = [
   {
@@ -74,10 +76,12 @@ export default function ProjectsSection() {
   }, []);
 
   const currentProject = projects[currentIndex];
+  const detailTilt = useTilt({ max: 10, scale: 1.02 });
 
   return (
     <div className="relative py-16 px-6 z-10">
-      <div className="max-w-6xl mx-auto">
+      <ProjectsAmbient />
+      <div className="relative max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
             Featured Projects
@@ -118,13 +122,12 @@ export default function ProjectsSection() {
           {/* Project Details */}
           <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-y-8' : 'opacity-100 transform translate-y-0'}`}>
             <div
+              ref={detailTilt.ref}
+              {...detailTilt.tiltProps}
               className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 h-full shadow-2xl"
-              style={{
-                transform: 'perspective(1000px) rotateX(2deg)',
-                transformStyle: 'preserve-3d',
-              }}
+              style={detailTilt.style}
             >
-              <div className="flex items-center space-x-4 mb-6">
+              <div className="flex items-center space-x-4 mb-6" data-tilt-depth="30">
                 <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentProject.color} flex items-center justify-center shadow-lg`}>
                   <currentProject.icon className="w-8 h-8 text-white" />
                 </div>

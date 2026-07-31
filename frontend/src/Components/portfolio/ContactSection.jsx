@@ -1,10 +1,12 @@
 import React from "react";
 import { Mail, Phone, Github, Linkedin, Twitter } from "lucide-react";
+import { ContactAmbient } from "./SectionAmbient";
 
 export default function ContactSection() {
   return (
     <div className="relative py-16 px-6 z-10">
-      <div className="max-w-6xl mx-auto">
+      <ContactAmbient />
+      <div className="relative max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">

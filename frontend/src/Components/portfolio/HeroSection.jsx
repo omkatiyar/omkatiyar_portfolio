@@ -1,9 +1,14 @@
 import React from 'react';
 import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
+import useTilt from './useTilt';
+import { HeroAmbient } from './SectionAmbient';
 
 export default function HeroSection({ onScrollToNext }) {
+  const aboutTilt = useTilt({ max: 8, scale: 1.01 });
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-6 py-16">
+    <div className="relative min-h-screen flex items-center justify-center px-6 pt-16 pb-0">
+      <HeroAmbient />
       <div className="max-w-4xl mx-auto text-center z-10">
         <div className="mb-8 animate-fade-in-up">
           <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform duration-300">
@@ -20,12 +25,20 @@ export default function HeroSection({ onScrollToNext }) {
           </p>
 
           {/* About Me Section */}
-          <div className="max-w-3xl mx-auto mb-12 p-8 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 animate-fadeInUp" style={{animationDelay: '0.4s'}}>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+          <div
+            ref={aboutTilt.ref}
+            {...aboutTilt.tiltProps}
+            className="max-w-3xl mx-auto mb-12 p-8 bg-slate-800/30 backdrop-blur-sm rounded-2xl border border-slate-700/50 animate-fadeInUp shadow-2xl"
+            style={{ animationDelay: '0.4s', ...aboutTilt.style }}
+          >
+            <h2
+              className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent"
+              data-tilt-depth="35"
+            >
               About Me
             </h2>
-            <p className="text-lg text-slate-300 leading-relaxed">
-              Hi, this is <span className="text-amber-400 font-semibold">Om Katiyar</span>, a passionate Full Stack Developer who specializes in creating elegant, efficient, and scalable applications. I have extensive experience in C++, JavaScript, TypeScript, Python, Go, SQL, MongoDB, Express.js, React, Django and Node.js. I am also currently unveiling the mysteries of <span className="text-amber-400 font-semibold">Gen AI Development</span>. My journey has taken me through diverse projects, from MVP startups to enterprise solutions, and now building AI-powered systems at scale.
+            <p className="text-lg text-slate-300 leading-relaxed" data-tilt-depth="20">
+              Hi, this is <span className="text-amber-400 font-semibold">Om Katiyar</span>, a passionate Full Stack Developer who specializes in creating elegant, efficient, and scalable applications. I have extensive experience in C++, JavaScript, TypeScript, Python, Go, SQL, MongoDB, Express.js, React, FastAPI and Node.js. I am also currently unveiling the mysteries of <span className="text-amber-400 font-semibold">Gen AI Development</span>. My journey has taken me through diverse projects, from MVP startups to enterprise solutions, and now building AI-powered systems at scale.
             </p>
           </div>
           

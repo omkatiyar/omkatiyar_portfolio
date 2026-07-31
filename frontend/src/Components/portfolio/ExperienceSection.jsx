@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield } from 'lucide-react';
+import useTilt from './useTilt';
+import { ExperienceAmbient } from './SectionAmbient';
 
 const experiences = [
   {
@@ -23,11 +25,10 @@ const experiences = [
     icon: TrendingUp,
     color: 'from-green-400 to-emerald-500',
     highlights: [
-      'Renewal Lead Flow Sales Funnel (Health + Motor)',
-      'Designed and implemented the Renewal Service microservice for processing renewal leads',
-      'Replaced old architecture with ITMS → RabbitMQ → Renewal Service → LMW → LMS/POS',
-      'Achieved ~40% faster lead readiness time for agents through asynchronous message handling',
-      'Built managerial dashboard using React.js, Node.js, and SQL to monitor agent performance and lead conversion rates'
+      'Renewal Pipeline Redesign: Designed and built a unified Renewal Service that consolidated scattered renewal logic previously split across 4 loosely coupled microservices — Storage, Renewal, Middleware, and Lead Management - into a single RabbitMQ-driven pipeline for health and motor insurance. Adopted a single-consumer design to preserve strict event ordering and respect insurer-side rate limits, improving lead throughput by 30–40% across 10,000+ daily leads without overwhelming downstream insurer APIs.',
+      'Reliability Engineering: Implemented event-ordering guarantees with dead-letter queues and configurable retry backoffs — maintained 99.5%+ message delivery reliability across peak renewal windows.',
+      'Operational Dashboards: Built real-time views of agent KPIs, queue backlogs, and failure hotspots — eliminated 25% of manual reporting overhead and enabled proactive resolution before SLA breaches.',
+      'Insurer Integration Layer: Built adapter modules with schema-normalization contracts and test suites per insurer - reduced new insurer onboarding from weeks to 2–3 days.'
     ]
   },
   {
@@ -37,11 +38,9 @@ const experiences = [
     icon: Building,
     color: 'from-blue-400 to-cyan-500',
     highlights: [
-      'Developed REST APIs in Node.js for survey and invoice processing',
-      'Reduced API response time by 20% through optimization',
-      'Built Bulk User Creation API for invoice discounting, cutting onboarding time by 30%',
-      'Optimized SQL queries and backend logic, reducing banking integration response times by 90%',
-      'Ensured fault tolerance by simulating faulty inputs and concurrency edge cases'
+      'Async Onboarding Execution: Redesigned a blocking onboarding flow using background job handlers to decouple heavy tasks from API requests — enabled non-blocking parallel workflows and eliminated processing bottlenecks under concurrent load.',
+      'Fault-Tolerant Onboarding: Enforced idempotent execution with validation checkpoints and dedupe logic — eliminated duplicate records and ensured consistent state transitions across repeated attempts.',
+      'Faster Customer Activation: Streamlined onboarding steps and stabilized workflow state propagation, reducing onboarding turnaround time by 30% and improving enterprise activation SLAs.'
     ]
   },
   {
@@ -51,10 +50,8 @@ const experiences = [
     icon: Shield,
     color: 'from-red-400 to-pink-500',
     highlights: [
-      'Developed deep learning pipeline for extreme low-light image enhancement using TensorFlow',
-      'Trained UNet-based CNN on the SID dataset, improving image brightness and noise reduction',
-      'Strengthened skills in Python scripting, data preprocessing, and GPU-based computation',
-      'Worked on ML-heavy project focusing on computer vision and image processing'
+      'Low-Light Enhancement Pipeline: Built an end-to-end image enhancement pipeline in TensorFlow based on the See in the Dark (SID) paper — replaced the traditional ISP stack with an end-to-end UNet trained from scratch on the SID dataset to directly map raw dark sensor inputs to clean, well-exposed RGB outputs.',
+      'Raw Image Preprocessing: Built a preprocessing pipeline for raw sensor data — applying noise removal, brightness amplification, and normalization before model ingestion, ensuring the training distribution accurately reflected real-world low-light capture conditions and improving PSNR across varying darkness levels.'
     ]
   }
 ];
@@ -76,10 +73,12 @@ export default function ExperienceSection() {
   }, []);
 
   const currentExperience = experiences[currentIndex];
+  const detailTilt = useTilt({ max: 10, scale: 1.02 });
 
   return (
     <div className="relative py-16 px-6 z-10">
-      <div className="max-w-6xl mx-auto">
+      <ExperienceAmbient />
+      <div className="relative max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
             Work Experience
@@ -122,13 +121,12 @@ export default function ExperienceSection() {
           {/* Experience Details */}
           <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-x-8' : 'opacity-100 transform translate-x-0'}`}>
             <div
+              ref={detailTilt.ref}
+              {...detailTilt.tiltProps}
               className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl"
-              style={{
-                transform: 'perspective(1000px) rotateX(2deg)',
-                transformStyle: 'preserve-3d',
-              }}
+              style={detailTilt.style}
             >
-              <div className="flex items-center space-x-4 mb-6">
+              <div className="flex items-center space-x-4 mb-6" data-tilt-depth="30">
                 <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentExperience.color} flex items-center justify-center shadow-lg`}>
                   <currentExperience.icon className="w-8 h-8 text-white" />
                 </div>
@@ -142,7 +140,7 @@ export default function ExperienceSection() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4" data-tilt-depth="15">
                 {currentExperience.highlights.map((highlight, index) => (
                   <div
                     key={index}
