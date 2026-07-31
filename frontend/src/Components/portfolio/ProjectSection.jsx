@@ -3,57 +3,56 @@ import { Code, TrendingUp, Gamepad2, BarChart3 } from 'lucide-react';
 
 const projects = [
   {
-    title: 'Snake Ladder Game',
-    description: 'Classic Snake and Ladder board game implementation with modern C++ features and object-oriented design.',
-    icon: Gamepad2,
-    color: 'from-red-400 to-pink-500',
-    technologies: ['C++', 'OOPS', 'Game Development'],
-    features: [
-      'Complete game logic implementation',
-      'Object-oriented design patterns',
-      'Interactive gameplay mechanics',
-      'Modern C++ best practices'
-    ]
-  },
-  {
-    title: 'Cashflow Modelling - Variable Annuity',
-    description: 'Mathematical modeling system for variable annuity cashflow analysis with comprehensive parameter calculations.',
-    period: 'March 2023 - Jun 2023 | Aagam Capital',
+    title: 'Job Queue Visualizer',
+    description: 'Real-time visualization of distributed job processing with retry logic, dead-letter routing, and backpressure monitoring.',
     icon: BarChart3,
     color: 'from-green-400 to-emerald-500',
-    technologies: ['C++', 'OOPS', 'Excel', 'Mathematical Modeling'],
+    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker Compose'],
     features: [
-      'Implemented variable annuity cashflow model',
-      'Calculated approximately 40 parameters with cyclic relationships',
-      'Excel integration for result storage and analysis',
-      'Validation against original results with matching characteristics'
+      'Push jobs via REST API, watch them process in real-time',
+      'Visual dead-letter queue with retry/discard controls',
+      'Configurable concurrency, backoff, and rate limiting',
+      'Live dashboard with queue depth, throughput, and failure rate metrics'
     ]
   },
   {
-    title: 'Algo Trading using Greek Analysis',
-    description: 'Sophisticated trading strategy using Black-Scholes model and Greek analysis for options trading.',
-    period: 'Aug 2024 - Sep 2024 | Freelance',
+    title: 'Webhook Relay Service',
+    description: 'Self-hosted webhook inspection and replay tool with rate limiting, filtering, and delivery guarantees.',
+    icon: Code,
+    color: 'from-purple-400 to-violet-500',
+    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker'],
+    features: [
+      'Receive, store, and inspect incoming webhooks in real-time',
+      'Replay failed deliveries with exponential backoff',
+      'Per-endpoint rate limiting and authentication',
+      'Filterable event log with full request/response capture'
+    ]
+  },
+  {
+    title: 'Nifty Options Greeks Engine',
+    description: 'Algorithmic trading engine using Black-Scholes model and Greek analysis for options signal generation on NSE.',
+    period: 'Aug 2024 - Sep 2024',
     icon: TrendingUp,
     color: 'from-blue-400 to-cyan-500',
     technologies: ['Rust', 'Python', 'NSE API', 'Black-Scholes Model'],
     features: [
-      'Option chain data extraction using NSE API',
-      'Black-Scholes model implementation for Greeks calculation',
-      'Mathematical functions for buy/sell signal generation',
-      'Backtesting: 62% win rate, 36% max drawdown, 70% yearly ROI'
+      'Real-time option chain extraction via NSE API',
+      'Black-Scholes Greeks calculation (Delta, Gamma, Theta, Vega)',
+      'Signal generation engine with buy/sell thresholds',
+      'Backtested: 62% win rate, 70% yearly ROI, 36% max drawdown'
     ]
   },
   {
-    title: 'EMA Trading Strategy',
-    description: 'Simple yet effective trading strategy using Exponential Moving Averages (9, 20, and 50 EMA) for market analysis.',
-    icon: Code,
-    color: 'from-purple-400 to-violet-500',
-    technologies: ['Python', 'Technical Analysis', 'EMA', 'Trading Algorithms'],
+    title: 'C++ System Design Patterns',
+    description: 'Production-grade implementations of design patterns applied to real-world systems — Uber, Amazon, Zomato, and more.',
+    icon: Gamepad2,
+    color: 'from-red-400 to-pink-500',
+    technologies: ['C++', 'OOP', 'Design Patterns'],
     features: [
-      'Multi-timeframe EMA analysis',
-      'Signal generation based on EMA crossovers',
-      'Automated trading strategy implementation',
-      'Performance optimization and backtesting'
+      'Strategy Pattern: Uber dynamic pricing, Amazon tax calculation',
+      'Factory Pattern: Loan processing, cloud storage provisioning',
+      'Observer Pattern: YouTube channel notifications, alert systems',
+      'Multiple other design patterns like Singleton, Decorator, Builder etc. practiced along with these (See GitHub for more)'
     ]
   }
 ];
@@ -95,11 +94,10 @@ export default function ProjectsSection() {
               <div
                 key={project.title}
                 onClick={() => setCurrentIndex(index)}
-                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
-                  index === currentIndex
+                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${index === currentIndex
                     ? 'bg-slate-700/50 border border-amber-400/50 shadow-lg'
                     : 'bg-slate-800/30 hover:bg-slate-700/30 border border-slate-700/30 hover:border-slate-600'
-                }`}
+                  }`}
               >
                 <div className="flex items-center space-x-4">
                   <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${project.color} flex items-center justify-center flex-shrink-0`}>
@@ -180,13 +178,6 @@ export default function ProjectsSection() {
                   ))}
                 </div>
               </div>
-
-              {/* Project Info */}
-              <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
-                <p className="text-slate-300 text-sm">
-                  📧 For project details and source code access, please contact via the form below.
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -197,9 +188,8 @@ export default function ProjectsSection() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
+                }`}
             />
           ))}
         </div>

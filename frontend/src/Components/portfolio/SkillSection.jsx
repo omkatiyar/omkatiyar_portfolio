@@ -1,25 +1,30 @@
-
 import React from 'react';
-import { Code, Database, Server } from 'lucide-react';
+import { Code, Database, Server, Wrench } from 'lucide-react';
 
 const skillCategories = [
   {
     title: 'Programming Languages',
     icon: Code,
-    skills: ['C++', 'JavaScript', 'TypeScript', 'Python', 'Go'],
+    skills: ['C++', 'JavaScript', 'TypeScript', 'Python', 'Go (Basic)'],
     color: 'from-blue-400 to-cyan-500'
   },
   {
     title: 'Backend & Frameworks',
     icon: Server,
-    skills: ['Node.js', 'Express', 'Django'],
+    skills: ['Node.js', 'Express', 'Next.js', 'RabbitMQ'],
     color: 'from-green-400 to-emerald-500'
   },
   {
     title: 'Databases',
     icon: Database,
-    skills: ['SQL', 'MongoDB'],
+    skills: ['PostgreSQL', 'MongoDB', 'Redis'],
     color: 'from-purple-400 to-violet-500'
+  },
+  {
+    title: 'DevOps & Tools',
+    icon: Wrench,
+    skills: ['Docker', 'Docker Compose', 'Jenkins', 'CI/CD Pipelines', 'New Relic', 'Git', 'Linux'],
+    color: 'from-amber-400 to-orange-500'
   }
 ];
 
@@ -36,7 +41,7 @@ export default function SkillsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {skillCategories.map((category, categoryIndex) => (
             <div
               key={category.title}
@@ -56,11 +61,11 @@ export default function SkillsSection() {
               <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${category.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
                 <category.icon className="w-8 h-8 text-white" />
               </div>
-              
+
               <h3 className="text-2xl font-bold text-center mb-6 text-white">
                 {category.title}
               </h3>
-              
+
               <div className="space-y-3">
                 {category.skills.map((skill, skillIndex) => (
                   <div
