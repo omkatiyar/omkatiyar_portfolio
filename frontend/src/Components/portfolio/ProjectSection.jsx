@@ -119,7 +119,13 @@ export default function ProjectsSection() {
 
           {/* Project Details */}
           <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-y-8' : 'opacity-100 transform translate-y-0'}`}>
-            <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 h-full">
+            <div
+              className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 h-full shadow-2xl"
+              style={{
+                transform: 'perspective(1000px) rotateX(2deg)',
+                transformStyle: 'preserve-3d',
+              }}
+            >
               <div className="flex items-center space-x-4 mb-6">
                 <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentProject.color} flex items-center justify-center shadow-lg`}>
                   <currentProject.icon className="w-8 h-8 text-white" />

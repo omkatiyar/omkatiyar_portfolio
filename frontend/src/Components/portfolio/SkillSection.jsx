@@ -40,9 +40,17 @@ export default function SkillsSection() {
           {skillCategories.map((category, categoryIndex) => (
             <div
               key={category.title}
-              className="group bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 hover:border-slate-600 transition-all duration-500 hover:transform hover:scale-105 animate-fadeInUp"
+              className="group bg-slate-800/30 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 hover:border-slate-600 transition-all duration-500 animate-fadeInUp shadow-xl hover:shadow-2xl hover:shadow-amber-400/10"
               style={{
-                animationDelay: `${categoryIndex * 0.2}s`
+                animationDelay: `${categoryIndex * 0.2}s`,
+                transform: 'perspective(1000px) rotateX(2deg)',
+                transformStyle: 'preserve-3d',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(5deg) scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'perspective(1000px) rotateX(2deg)';
               }}
             >
               <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${category.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>

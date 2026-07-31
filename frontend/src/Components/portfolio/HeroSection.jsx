@@ -25,7 +25,7 @@ export default function HeroSection({ onScrollToNext }) {
               About Me
             </h2>
             <p className="text-lg text-slate-300 leading-relaxed">
-              Hi, this is <span className="text-amber-400 font-semibold">Om Katiyar</span>, a passionate Full Stack Developer who specializes in creating elegant, efficient, and scalable applications. I have extensive experience in C++, JavaScript, TypeScript, Python, Go, SQL, MongoDB, Express.js, React, Django and Node.js. I am also currently unveiling the mysteries of <span className="text-amber-400 font-semibold">Gen AI Development</span>. My journey has taken me through diverse projects, from MVP startups to enterprise solutions.
+              Hi, this is <span className="text-amber-400 font-semibold">Om Katiyar</span>, a passionate Full Stack Developer who specializes in creating elegant, efficient, and scalable applications. I have extensive experience in C++, JavaScript, TypeScript, Python, Go, SQL, MongoDB, Express.js, React, Django and Node.js. I am also currently unveiling the mysteries of <span className="text-amber-400 font-semibold">Gen AI Development</span>. My journey has taken me through diverse projects, from MVP startups to enterprise solutions, and now building AI-powered systems at scale.
             </p>
           </div>
           

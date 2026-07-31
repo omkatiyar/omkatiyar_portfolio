@@ -3,18 +3,17 @@ import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield } from 'lucid
 
 const experiences = [
   {
-    company: 'Turing',
+    company: 'Airawat Research Foundation (IIT Kanpur)',
     role: 'Software Developer',
-    period: 'May 2024 – June 2025',
+    period: 'Jan 2025 – Present',
     icon: Zap,
     color: 'from-purple-400 to-violet-500',
-
     highlights: [
-      'Worked on building a robust evaluation pipeline to train AI models using reinforcement learning',
-      'Created and containerized multi-language code execution environments using Docker for languages like C++, Python, and JavaScript, and developed microservice using Node.js.',
-      'Evaluated two AI-generated responses, analyzing their strengths, weaknesses, and correctness in terms of logic, readability, and edge-case handling.',
-      'Assessed and rated four AI-generated responses, detailing pros and cons for each and writing rubrics and reference solutions to guide the model toward generating higher-quality, correct code.',
-      'Executed and tested AI-generated code against custom-built unit tests, identified logic or syntax failures, and produced corrected implementations ensuring all tests passed successfully.'
+      'AI Requirements Engineering Platform: Architected an agentic workflow integrating Notion and Claude to automatically analyze Product Requirement Documents (PRDs), identify ambiguous and incomplete requirements, generate clarification questions for Business Analysts, and decompose approved features into 5–20 implementation-ready engineering tasks with acceptance criteria, standardizing BA-to-PM-to-developer handoffs and streamlining sprint planning.',
+      'AI Grievance Dashboard (Madhya Pradesh): Shipped an LLM-integrated dashboard (OpenAI APIs) automating 8-category classification, AI-generated summaries, and natural-language querying; designed and enforced nested JSON schemas for structured LLM outputs and API contracts, reducing manual review effort by ∼60% for administrators handling 50,000+ complaints/month.',
+      'Intelligent Decision Support System for Air Quality: Built a multi-city dashboard unifying air-quality data from 10+ external sensor APIs into a single source of truth, with a background worker handling staggered ingestion and automated CPCB-threshold alerting. Ported a legacy rule engine into a deterministic evaluator that auto-generates alerts and SOPs on a 15-min/hourly cadence, and integrated pre-built ML models (source-pinpointing, hotspot detection, PM2.5 forecasting) into the live pipeline. Designed a registry-driven architecture where onboarding a new city needs only a config + database entry (zero code forks), enabling deployment for Lucknow and Kanpur.',
+      'Centralized Auth Framework (CAF): Architected a centralized authorization platform integrating Keycloak SSO with OpenFGA ReBAC for relationship-aware access control, eliminating application-level authorization logic while enabling secure, auditable, and scalable permission enforcement across government systems.',
+      'CI/CD Infrastructure (AirOS): Architected a self-configuring Jenkins platform (Docker Compose, JCasC, Groovy) that dynamically provisions Multibranch Pipeline jobs across 5+ repositories with automated SSH-based deployments, enabling zero-touch application delivery.'
     ]
   },
   {
@@ -122,7 +121,13 @@ export default function ExperienceSection() {
 
           {/* Experience Details */}
           <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-x-8' : 'opacity-100 transform translate-x-0'}`}>
-            <div className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50">
+            <div
+              className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl"
+              style={{
+                transform: 'perspective(1000px) rotateX(2deg)',
+                transformStyle: 'preserve-3d',
+              }}
+            >
               <div className="flex items-center space-x-4 mb-6">
                 <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentExperience.color} flex items-center justify-center shadow-lg`}>
                   <currentExperience.icon className="w-8 h-8 text-white" />
