@@ -24,6 +24,19 @@ export default function HeroSection({ onScrollToNext }) {
             Specializing in AI, Backend Systems & Performance Optimization.
           </p>
 
+          {/* Open to Work Badge */}
+          <div className="flex justify-center mb-8 animate-fadeIn" style={{animationDelay: '0.3s'}}>
+            <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-emerald-500/10 border border-emerald-500/40 rounded-full shadow-lg">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+              </span>
+              <span className="text-emerald-400 text-sm md:text-base font-medium">
+                Open to Remote & Async Work — Any Timezone
+              </span>
+            </div>
+          </div>
+
           {/* About Me Section */}
           <div
             ref={aboutTilt.ref}
