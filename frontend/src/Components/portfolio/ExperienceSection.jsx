@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield, Cpu } from 'lucide-react';
+import { Calendar, ChevronRight, Zap, TrendingUp, Shield, Cpu } from 'lucide-react';
 import useTilt from './useTilt';
 import { ExperienceAmbient } from './SectionAmbient';
 
@@ -45,18 +45,6 @@ const experiences = [
       'The old fan-out caused cross-service race conditions and inconsistent retries; a single-consumer design with durable queues preserved per-policy ordering and lifted throughput by 30\u201340% across 10,000+ daily leads.',
       'Reliability Engineering: Added dead-letter queues, exponential backoff with jitter and idempotent handlers keyed on policy and event hash, with alerts on DLQ depth and consumer lag, holding 99.5%+ delivery through 3x\u20134x peak traffic.',
       'Integration Layer: Built TypeScript adapters for auth flows, schema normalization and error code translation behind a common interface, covered by contract tests, cutting new partner onboarding from weeks to 2\u20133 days.'
-    ]
-  },
-  {
-    company: 'ClearTax',
-    role: 'Software Engineer',
-    period: 'Jul 2022 – Feb 2023',
-    icon: Building,
-    color: 'from-blue-400 to-cyan-500',
-    highlights: [
-      'Async Onboarding Execution: Redesigned a blocking onboarding flow using background job handlers to decouple heavy tasks from API requests — enabled non-blocking parallel workflows and eliminated processing bottlenecks under concurrent load.',
-      'Fault-Tolerant Onboarding: Enforced idempotent execution with validation checkpoints and dedupe logic — eliminated duplicate records and ensured consistent state transitions across repeated attempts.',
-      'Faster Customer Activation: Streamlined onboarding steps and stabilized workflow state propagation, reducing onboarding turnaround time by 30% and improving enterprise activation SLAs.'
     ]
   },
   {
