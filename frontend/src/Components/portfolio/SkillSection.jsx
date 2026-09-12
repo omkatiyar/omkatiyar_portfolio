@@ -1,5 +1,5 @@
 import React from 'react';
-import { Code, Database, Server, Monitor, Layers, FileText, Cloud, CheckCircle } from 'lucide-react';
+import { Code, Database, Server, Monitor, Cloud, Brain } from 'lucide-react';
 import useTilt from './useTilt';
 import { SkillsAmbient } from './SectionAmbient';
 
@@ -47,19 +47,13 @@ const skillCategories = [
   {
     title: 'Backend',
     icon: Server,
-    skills: ['Node.js', 'Express', 'FastAPI', 'Spring Boot', 'REST APIs', 'Microservices'],
+    skills: ['Node.js', 'Express', 'FastAPI', 'Django', 'Gin', 'RabbitMQ', 'REST APIs', 'Microservices'],
     color: 'from-green-400 to-emerald-500'
-  },
-  {
-    title: 'Frontend',
-    icon: Monitor,
-    skills: ['React', 'Next.js', 'Canvas2Code'],
-    color: 'from-blue-400 to-cyan-500'
   },
   {
     title: 'Languages',
     icon: Code,
-    skills: ['TypeScript', 'Python', 'C++', 'JavaScript', 'Go'],
+    skills: ['TypeScript', 'JavaScript', 'Python', 'C++', 'Java', 'Go'],
     color: 'from-purple-400 to-violet-500'
   },
   {
@@ -69,28 +63,22 @@ const skillCategories = [
     color: 'from-pink-400 to-rose-500'
   },
   {
-    title: 'Architecture',
-    icon: Layers,
-    skills: ['System Design', 'Event-Driven Architecture', 'Message Queues (RabbitMQ)', 'Distributed Systems'],
+    title: 'AI & Data',
+    icon: Brain,
+    skills: ['LLM APIs (OpenAI)', 'ML Model Integration', 'RAG', 'Usage Metering and Token Accounting'],
     color: 'from-amber-400 to-orange-500'
-  },
-  {
-    title: 'Document/Data Processing',
-    icon: FileText,
-    skills: ['OCR', 'PDF/Image Parsing', 'Nested JSON Schemas', 'Cloud Object Storage'],
-    color: 'from-teal-400 to-cyan-500'
   },
   {
     title: 'Infra/DevOps',
     icon: Cloud,
-    skills: ['Docker', 'Kubernetes', 'CI/CD', 'Jenkins', 'AWS S3', 'PM2', 'Nginx', 'Linux', 'Git', 'NewRelic', 'Grafana'],
+    skills: ['Docker', 'Kubernetes', 'Jenkins', 'CI/CD', 'AWS S3', 'Nginx', 'Linux', 'Git', 'Grafana', 'NewRelic'],
     color: 'from-red-400 to-pink-500'
   },
   {
-    title: 'Practices',
-    icon: CheckCircle,
-    skills: ['Agile/Scrum', 'Unit Testing', 'Code Review'],
-    color: 'from-indigo-400 to-purple-500'
+    title: 'Frontend',
+    icon: Monitor,
+    skills: ['React', 'Next.js', 'Canvas2Code'],
+    color: 'from-blue-400 to-cyan-500'
   }
 ];
 

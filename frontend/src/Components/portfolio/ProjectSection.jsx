@@ -1,9 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Code, TrendingUp, Gamepad2, BarChart3 } from 'lucide-react';
+import { Code, TrendingUp, Gamepad2, BarChart3, Gauge, Github } from 'lucide-react';
 import useTilt from './useTilt';
 import { ProjectsAmbient } from './SectionAmbient';
 
 const projects = [
+  {
+    title: 'AI Metering Service',
+    description: 'Per-user AI usage metering that reserves estimated credits before the provider call and reconciles them against real token cost after \u2014 the same billing problem tools like Cursor and Claude Code face, where true cost is known only once the model responds.',
+    icon: Gauge,
+    color: 'from-amber-400 to-orange-500',
+    github: 'https://github.com/omkatiyar/ai-metering-service',
+    technologies: ['Python', 'FastAPI', 'PostgreSQL', 'Docker'],
+    features: [
+      'Reserve-then-reconcile credit flow around every provider call',
+      'Quota correctness under concurrent load via row-level locking',
+      'UNIQUE idempotency constraint preventing double-charges on retries',
+      'Partial and failed provider calls charged or released explicitly',
+      'Tested against real Postgres, not mocks'
+    ]
+  },
   {
     title: 'Job Queue Visualizer',
     description: 'Real-time visualization of distributed job processing with retry logic, dead-letter routing, and backpressure monitoring.',
@@ -135,6 +150,17 @@ export default function ProjectsSection() {
                   <h3 className="text-2xl font-bold text-white">{currentProject.title}</h3>
                   {currentProject.period && (
                     <p className="text-amber-400 text-sm font-medium mt-1">{currentProject.period}</p>
+                  )}
+                  {currentProject.github && (
+                    <a
+                      href={currentProject.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 mt-1 text-sm text-slate-400 hover:text-amber-400 transition-colors duration-300"
+                    >
+                      <Github className="w-4 h-4" />
+                      {currentProject.github.replace('https://', '')}
+                    </a>
                   )}
                 </div>
               </div>

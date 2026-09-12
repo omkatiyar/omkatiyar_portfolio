@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield } from 'lucide-react';
+import { Building, Calendar, ChevronRight, Zap, TrendingUp, Shield, Cpu } from 'lucide-react';
 import useTilt from './useTilt';
 import { ExperienceAmbient } from './SectionAmbient';
 
@@ -7,28 +7,44 @@ const experiences = [
   {
     company: 'Airawat Research Foundation (IIT Kanpur)',
     role: 'Software Developer',
-    period: 'Jan 2025 – Present',
+    period: 'Aug 2025 \u2013 Present',
     icon: Zap,
     color: 'from-purple-400 to-violet-500',
     highlights: [
-      'AI Requirements Engineering Platform: Architected an agentic workflow integrating Notion and Claude to automatically analyze Product Requirement Documents (PRDs), identify ambiguous and incomplete requirements, generate clarification questions for Business Analysts, and decompose approved features into 5–20 implementation-ready engineering tasks with acceptance criteria, standardizing BA-to-PM-to-developer handoffs and streamlining sprint planning.',
-      'AI Grievance Dashboard (Madhya Pradesh): Shipped an LLM-integrated dashboard (OpenAI APIs) automating 8-category classification, AI-generated summaries, and natural-language querying; designed and enforced nested JSON schemas for structured LLM outputs and API contracts, reducing manual review effort by ∼60% for administrators handling 50,000+ complaints/month.',
-      'Intelligent Decision Support System for Air Quality: Built a multi-city dashboard unifying air-quality data from 10+ external sensor APIs into a single source of truth, with a background worker handling staggered ingestion and automated CPCB-threshold alerting. Ported a legacy rule engine into a deterministic evaluator that auto-generates alerts and SOPs on a 15-min/hourly cadence, and integrated pre-built ML models (source-pinpointing, hotspot detection, PM2.5 forecasting) into the live pipeline. Designed a registry-driven architecture where onboarding a new city needs only a config + database entry (zero code forks), enabling deployment for Lucknow and Kanpur.',
-      'Centralized Auth Framework (CAF): Architected a centralized authorization platform integrating Keycloak SSO with OpenFGA ReBAC for relationship-aware access control, eliminating application-level authorization logic while enabling secure, auditable, and scalable permission enforcement across government systems.',
-      'CI/CD Infrastructure (AirOS): Architected a self-configuring Jenkins platform (Docker Compose, JCasC, Groovy) that dynamically provisions Multibranch Pipeline jobs across 5+ repositories with automated SSH-based deployments, enabling zero-touch application delivery.'
+      'Air Quality Decision Support System: Built a multi-city platform in Node.js unifying 10+ sensor APIs behind one ingestion worker, with a deterministic rule evaluator generating alerts and response procedures on 15-minute and hourly cycles.',
+      'Replaced a legacy rule engine, integrated ML models for hotspot detection and PM2.5 forecasting, and made the platform registry-driven so a new city needs only a config and database entry, shipping two city deployments with zero code forks.',
+      'Centralized Auth Framework: Architected a central authorization platform on Keycloak SSO with OpenFGA ReBAC, exposing one relationship-aware permission check API for all internal applications.',
+      'Removed authorization logic from individual services, making access rules auditable in one place and letting new applications onboard without writing their own permission code.',
+      'CI/CD Platform: Built a self-configuring Jenkins setup (Docker Compose, JCasC, Groovy) provisioning Multibranch pipelines across 5+ repositories with SSH-based deployments, replacing hand-made jobs with zero-touch delivery.',
+      'LLM-Powered Grievance Dashboard: Shipped a Node.js service on OpenAI APIs doing 8-category classification, summaries and natural-language querying, cutting manual review time by about 60% for a team handling 50,000+ complaints a month.'
+    ]
+  },
+  {
+    company: 'Turing',
+    role: 'Software Engineer',
+    period: 'May 2024 \u2013 Jun 2025',
+    icon: Cpu,
+    color: 'from-teal-400 to-cyan-500',
+    highlights: [
+      'Secure Code Execution Platform: Architected a multi-language Docker sandbox (C++, Python, Java, TypeScript) that isolates untrusted submissions from the host.',
+      'Cut per-execution latency by 30\u201350% and removed host-level security incidents, making the platform safe to run at scale on arbitrary user code.',
+      'Evaluation Pipeline: Built Node.js services that orchestrated code-run workflows, normalized heterogeneous logs and surfaced structured diffs, shortening benchmarking cycle time by about 40%.',
+      'Result Aggregation: Designed an async collection layer on Node.js and Redis that handled out-of-order arrivals and partial failures from distributed workers, dropping reporting lag from minutes to under 10 seconds.',
+      'LLM Evaluation: Wrote rubric-based assessments of model-generated code on correctness, edge cases and idiomatic style, producing failure-mode annotations that fed RLHF and fine-tuning pipelines.',
+      'Async Collaboration: Worked fully remote with US-based engineering and product teams, writing design briefs in Notion, running code reviews across time zones and owning features end to end.'
     ]
   },
   {
     company: 'InsuranceDekho',
     role: 'Software Engineer',
-    period: 'May 2023 – May 2024',
+    period: 'Jul 2022 \u2013 May 2024',
     icon: TrendingUp,
     color: 'from-green-400 to-emerald-500',
     highlights: [
-      'Renewal Pipeline Redesign: Designed and built a unified Renewal Service that consolidated scattered renewal logic previously split across 4 loosely coupled microservices — Storage, Renewal, Middleware, and Lead Management - into a single RabbitMQ-driven pipeline for health and motor insurance. Adopted a single-consumer design to preserve strict event ordering and respect insurer-side rate limits, improving lead throughput by 30–40% across 10,000+ daily leads without overwhelming downstream insurer APIs.',
-      'Reliability Engineering: Implemented event-ordering guarantees with dead-letter queues and configurable retry backoffs — maintained 99.5%+ message delivery reliability across peak renewal windows.',
-      'Operational Dashboards: Built real-time views of agent KPIs, queue backlogs, and failure hotspots — eliminated 25% of manual reporting overhead and enabled proactive resolution before SLA breaches.',
-      'Insurer Integration Layer: Built adapter modules with schema-normalization contracts and test suites per insurer - reduced new insurer onboarding from weeks to 2–3 days.'
+      'Renewal Pipeline Redesign: Consolidated renewal logic spread across 4 loosely coupled microservices into one Node.js (Express) service backed by a RabbitMQ pipeline.',
+      'The old fan-out caused cross-service race conditions and inconsistent retries; a single-consumer design with durable queues preserved per-policy ordering and lifted throughput by 30\u201340% across 10,000+ daily leads.',
+      'Reliability Engineering: Added dead-letter queues, exponential backoff with jitter and idempotent handlers keyed on policy and event hash, with alerts on DLQ depth and consumer lag, holding 99.5%+ delivery through 3x\u20134x peak traffic.',
+      'Integration Layer: Built TypeScript adapters for auth flows, schema normalization and error code translation behind a common interface, covered by contract tests, cutting new partner onboarding from weeks to 2\u20133 days.'
     ]
   },
   {
