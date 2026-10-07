@@ -1,252 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { Code, TrendingUp, Gamepad2, BarChart3, Gauge, Github } from 'lucide-react';
-import useTilt from './useTilt';
-import { ProjectsAmbient } from './SectionAmbient';
+import React, { useRef } from 'react';
+import useMediaQuery from './scene/useMediaQuery';
+import { useJourneyController, projectsStore, PROJECTS_TAIL_START, PROJECTS_HEAD_START } from './scene/experienceStore';
+import { PROJECTS } from './projectsData';
+import ProjectBook from './ProjectBook';
 
-const projects = [
-  {
-    title: 'AI Metering Service',
-    description: 'Per-user AI usage metering that reserves estimated credits before the provider call and reconciles them against real token cost after \u2014 the same billing problem tools like Cursor and Claude Code face, where true cost is known only once the model responds.',
-    icon: Gauge,
-    color: 'from-amber-400 to-orange-500',
-    github: 'https://github.com/omkatiyar/ai-metering-service',
-    technologies: ['Python', 'FastAPI', 'PostgreSQL', 'Docker'],
-    features: [
-      'Reserve-then-reconcile credit flow around every provider call',
-      'Quota correctness under concurrent load via row-level locking',
-      'UNIQUE idempotency constraint preventing double-charges on retries',
-      'Partial and failed provider calls charged or released explicitly',
-      'Tested against real Postgres, not mocks'
-    ]
-  },
-  {
-    title: 'Job Queue Visualizer',
-    description: 'Real-time visualization of distributed job processing with retry logic, dead-letter routing, and backpressure monitoring.',
-    icon: BarChart3,
-    color: 'from-green-400 to-emerald-500',
-    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker Compose'],
-    features: [
-      'Push jobs via REST API, watch them process in real-time',
-      'Visual dead-letter queue with retry/discard controls',
-      'Configurable concurrency, backoff, and rate limiting',
-      'Live dashboard with queue depth, throughput, and failure rate metrics'
-    ]
-  },
-  {
-    title: 'Webhook Relay Service',
-    description: 'Self-hosted webhook inspection and replay tool with rate limiting, filtering, and delivery guarantees.',
-    icon: Code,
-    color: 'from-purple-400 to-violet-500',
-    technologies: ['Node.js', 'PostgreSQL', 'React', 'Docker'],
-    features: [
-      'Receive, store, and inspect incoming webhooks in real-time',
-      'Replay failed deliveries with exponential backoff',
-      'Per-endpoint rate limiting and authentication',
-      'Filterable event log with full request/response capture'
-    ]
-  },
-  {
-    title: 'Nifty Options Greeks Engine',
-    description: 'Algorithmic trading engine using Black-Scholes model and Greek analysis for options signal generation on NSE.',
-    period: 'Aug 2024 - Sep 2024',
-    icon: TrendingUp,
-    color: 'from-blue-400 to-cyan-500',
-    technologies: ['Rust', 'Python', 'NSE API', 'Black-Scholes Model'],
-    features: [
-      'Real-time option chain extraction via NSE API',
-      'Black-Scholes Greeks calculation (Delta, Gamma, Theta, Vega)',
-      'Signal generation engine with buy/sell thresholds',
-      'Backtested: 62% win rate, 70% yearly ROI, 36% max drawdown'
-    ]
-  },
-  {
-    title: 'C++ System Design Patterns',
-    description: 'Production-grade implementations of design patterns applied to real-world systems — Uber, Amazon, Zomato, and more.',
-    icon: Gamepad2,
-    color: 'from-red-400 to-pink-500',
-    technologies: ['C++', 'OOP', 'Design Patterns'],
-    features: [
-      'Strategy Pattern: Uber dynamic pricing, Amazon tax calculation',
-      'Factory Pattern: Loan processing, cloud storage provisioning',
-      'Observer Pattern: YouTube channel notifications, alert systems',
-      'Multiple other design patterns like Singleton, Decorator, Builder etc. practiced along with these (See GitHub for more)'
-    ]
-  }
-];
+/**
+ * Projects = the project book and nothing else. Every project's description, stack,
+ * diagram and engineering points live on the book's pages (real HTML). Scroll opens the
+ * pages, then the section hands off to Contact through the 3D convergence ending
+ * (scene/ProjectsJourney.jsx). A "source" link renders only for projects that actually
+ * have a URL (today just AI Metering Service); it sits outside the flip target.
+ */
+
+// module-level so the controller effect doesn't re-run each render
+const INTRO_IN = [0.08, 0.28]; // book fades in after the camera has left the tunnel
+const noop = () => {};
 
 export default function ProjectsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const sectionRef = useRef(null);
+  const introRef = useRef(null);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % projects.length);
-        setIsAnimating(false);
-      }, 300);
-    }, 7000);
+  useJourneyController({
+    store: projectsStore,
+    tailStart: PROJECTS_TAIL_START,
+    headStart: PROJECTS_HEAD_START,
+    introRef,
+    introIn: INTRO_IN,
+    introKeep: true,
+    sectionRef,
+    count: 2,
+    isMobile,
+    onIndex: noop
+  });
 
-    return () => clearInterval(interval);
-  }, []);
+  const linked = PROJECTS.filter((p) => p.github);
 
-  const currentProject = projects[currentIndex];
-  const detailTilt = useTilt({ max: 10, scale: 1.02 });
+  const caption = (
+    <>
+      <p className="mt-8 font-mono text-xs tracking-[0.3em] text-amber-400 uppercase">Engineering projects</p>
+      <p className="mt-2 text-2xl font-semibold uppercase tracking-tight text-slate-100 md:text-3xl">Systems at a glance</p>
+      {linked.length > 0 && (
+        <ul className="mt-4 flex flex-wrap justify-center gap-3">
+          {linked.map((p) => (
+            <li key={p.title}>
+              <a
+                href={p.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 px-4 py-1.5 font-mono text-[11px] tracking-[0.2em] uppercase text-amber-300 transition-colors duration-300 hover:border-amber-400 hover:bg-amber-400/10"
+              >
+                {p.short} source <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <div ref={sectionRef} className="relative z-10 px-6">
+        {/* the card stays pinned while scroll turns it through every project */}
+        <div data-journey-head style={{ height: '230vh' }}>
+          <div className="sticky top-0 flex h-screen flex-col items-center justify-center pt-16">
+            <ProjectBook variant="deck" pageWidth={300} />
+            <div className="flex flex-col items-center text-center">{caption}</div>
+          </div>
+        </div>
+        <div data-journey-tail className="h-[45vh]" aria-hidden="true" />
+      </div>
+    );
+  }
 
   return (
-    <div className="relative py-16 px-6 z-10">
-      <ProjectsAmbient />
-      <div className="relative max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-            Featured Projects
-          </h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Innovative solutions spanning game development, financial modeling, and trading systems
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Project Navigation */}
-          <div className="space-y-4">
-            {projects.map((project, index) => (
-              <div
-                key={project.title}
-                onClick={() => setCurrentIndex(index)}
-                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${index === currentIndex
-                    ? 'bg-slate-700/50 border border-amber-400/50 shadow-lg'
-                    : 'bg-slate-800/30 hover:bg-slate-700/30 border border-slate-700/30 hover:border-slate-600'
-                  }`}
-              >
-                <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${project.color} flex items-center justify-center flex-shrink-0`}>
-                    <project.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-white truncate">{project.title}</h3>
-                    <p className="text-slate-400 text-sm line-clamp-1">{project.description}</p>
-                    {project.period && (
-                      <p className="text-xs text-slate-500 mt-1">{project.period}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+    // 260vh = one pinned screen + 160vh of scroll: opening the book, then the ending
+    <div ref={sectionRef} className="relative z-10" style={{ height: '260vh', marginTop: '-100vh' }}>
+      <div className="sticky top-0 flex h-screen items-center px-6 pt-16">
+        <div
+          ref={introRef}
+          className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-6 pt-16"
+          style={{ opacity: 0, visibility: 'hidden' }}
+        >
+          <div className="pointer-events-auto">
+            <ProjectBook pageWidth={340} />
           </div>
-
-          {/* Project Details */}
-          <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-y-8' : 'opacity-100 transform translate-y-0'}`}>
-            <div
-              ref={detailTilt.ref}
-              {...detailTilt.tiltProps}
-              className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 h-full shadow-2xl"
-              style={detailTilt.style}
-            >
-              <div className="flex items-center space-x-4 mb-6" data-tilt-depth="30">
-                <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentProject.color} flex items-center justify-center shadow-lg`}>
-                  <currentProject.icon className="w-8 h-8 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white">{currentProject.title}</h3>
-                  {currentProject.period && (
-                    <p className="text-amber-400 text-sm font-medium mt-1">{currentProject.period}</p>
-                  )}
-                  {currentProject.github && (
-                    <a
-                      href={currentProject.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 mt-1 text-sm text-slate-400 hover:text-amber-400 transition-colors duration-300"
-                    >
-                      <Github className="w-4 h-4" />
-                      {currentProject.github.replace('https://', '')}
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <p className="text-slate-300 text-lg mb-6 leading-relaxed">
-                {currentProject.description}
-              </p>
-
-              {/* Technologies */}
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold text-white mb-3">Technologies Used</h4>
-                <div className="flex flex-wrap gap-2">
-                  {currentProject.technologies.map((tech, index) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 bg-slate-700/50 text-slate-300 rounded-full text-sm border border-slate-600/50"
-                      style={{
-                        animationDelay: `${index * 0.1}s`,
-                        animation: isAnimating ? 'none' : 'fadeInScale 0.6s ease-out forwards'
-                      }}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Key Features */}
-              <div className="mb-8">
-                <h4 className="text-lg font-semibold text-white mb-4">Key Features</h4>
-                <div className="space-y-3">
-                  {currentProject.features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start space-x-3"
-                      style={{
-                        animationDelay: `${index * 0.1}s`,
-                        animation: isAnimating ? 'none' : 'slideInFromLeft 0.6s ease-out forwards'
-                      }}
-                    >
-                      <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
-                      <p className="text-slate-300">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress Indicators */}
-        <div className="flex justify-center mt-12 space-x-2">
-          {projects.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
-                }`}
-            />
-          ))}
+          <div className="pointer-events-auto flex flex-col items-center text-center">{caption}</div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes slideInFromLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }

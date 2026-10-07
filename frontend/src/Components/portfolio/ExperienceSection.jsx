@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, ChevronRight, Zap, TrendingUp, Shield, Cpu } from 'lucide-react';
-import useTilt from './useTilt';
-import { ExperienceAmbient } from './SectionAmbient';
+import React, { useRef, useState } from 'react';
+import useMediaQuery from './scene/useMediaQuery';
+import { useJourneyController, TAIL_START } from './scene/experienceStore';
 
-const experiences = [
+/**
+ * Work Experience as a scroll-driven career path. This file owns all real
+ * content (semantic HTML); the 3D scene in scene/ExperienceJourney.jsx only
+ * visualizes it. Ordered newest-first, like a resume, so scrolling forward goes back
+ * through the career. `legend` and `metrics` only restate what the highlights say.
+ */
+const EXPERIENCES = [
   {
     company: 'Airawat Research Foundation (IIT Kanpur)',
     role: 'Software Developer',
-    period: 'Aug 2025 \u2013 Present',
-    icon: Zap,
-    color: 'from-purple-400 to-violet-500',
+    period: 'Aug 2025 – Present',
+    legend: 'User → Keycloak SSO → Permission-check API → OpenFGA ReBAC → Internal apps',
+    metrics: [
+      { value: '10+', label: 'Sensor APIs unified' },
+      { value: '2', label: 'City deployments' },
+      { value: '~60%', label: 'Less manual review' }
+    ],
     highlights: [
       'Air Quality Decision Support System: Built a multi-city platform in Node.js unifying 10+ sensor APIs behind one ingestion worker, with a deterministic rule evaluator generating alerts and response procedures on 15-minute and hourly cycles.',
       'Replaced a legacy rule engine, integrated ML models for hotspot detection and PM2.5 forecasting, and made the platform registry-driven so a new city needs only a config and database entry, shipping two city deployments with zero code forks.',
@@ -22,12 +31,16 @@ const experiences = [
   {
     company: 'Turing',
     role: 'Software Engineer',
-    period: 'May 2024 \u2013 Jun 2025',
-    icon: Cpu,
-    color: 'from-teal-400 to-cyan-500',
+    period: 'May 2024 – Jun 2025',
+    legend: 'Docker sandboxes (C++ · Python · Java · TS) → Redis aggregation → Rubric evaluation → RLHF data',
+    metrics: [
+      { value: '30–50%', label: 'Lower latency' },
+      { value: '~40%', label: 'Faster benchmarking' },
+      { value: '<10s', label: 'Reporting lag' }
+    ],
     highlights: [
       'Secure Code Execution Platform: Architected a multi-language Docker sandbox (C++, Python, Java, TypeScript) that isolates untrusted submissions from the host.',
-      'Cut per-execution latency by 30\u201350% and removed host-level security incidents, making the platform safe to run at scale on arbitrary user code.',
+      'Cut per-execution latency by 30–50% and removed host-level security incidents, making the platform safe to run at scale on arbitrary user code.',
       'Evaluation Pipeline: Built Node.js services that orchestrated code-run workflows, normalized heterogeneous logs and surfaced structured diffs, shortening benchmarking cycle time by about 40%.',
       'Result Aggregation: Designed an async collection layer on Node.js and Redis that handled out-of-order arrivals and partial failures from distributed workers, dropping reporting lag from minutes to under 10 seconds.',
       'LLM Evaluation: Wrote rubric-based assessments of model-generated code on correctness, edge cases and idiomatic style, producing failure-mode annotations that fed RLHF and fine-tuning pipelines.',
@@ -37,22 +50,25 @@ const experiences = [
   {
     company: 'InsuranceDekho',
     role: 'Software Engineer',
-    period: 'Jul 2022 \u2013 May 2024',
-    icon: TrendingUp,
-    color: 'from-green-400 to-emerald-500',
+    period: 'Jul 2022 – May 2024',
+    legend: '4 services → RabbitMQ → Single consumer → Partner adapters · DLQ / retry',
+    metrics: [
+      { value: '10K+', label: 'Daily leads' },
+      { value: '30–40%', label: 'Throughput' },
+      { value: '99.5%+', label: 'Delivery' }
+    ],
     highlights: [
       'Renewal Pipeline Redesign: Consolidated renewal logic spread across 4 loosely coupled microservices into one Node.js (Express) service backed by a RabbitMQ pipeline.',
-      'The old fan-out caused cross-service race conditions and inconsistent retries; a single-consumer design with durable queues preserved per-policy ordering and lifted throughput by 30\u201340% across 10,000+ daily leads.',
-      'Reliability Engineering: Added dead-letter queues, exponential backoff with jitter and idempotent handlers keyed on policy and event hash, with alerts on DLQ depth and consumer lag, holding 99.5%+ delivery through 3x\u20134x peak traffic.',
-      'Integration Layer: Built TypeScript adapters for auth flows, schema normalization and error code translation behind a common interface, covered by contract tests, cutting new partner onboarding from weeks to 2\u20133 days.'
+      'The old fan-out caused cross-service race conditions and inconsistent retries; a single-consumer design with durable queues preserved per-policy ordering and lifted throughput by 30–40% across 10,000+ daily leads.',
+      'Reliability Engineering: Added dead-letter queues, exponential backoff with jitter and idempotent handlers keyed on policy and event hash, with alerts on DLQ depth and consumer lag, holding 99.5%+ delivery through 3x–4x peak traffic.',
+      'Integration Layer: Built TypeScript adapters for auth flows, schema normalization and error code translation behind a common interface, covered by contract tests, cutting new partner onboarding from weeks to 2–3 days.'
     ]
   },
   {
     company: 'Samsung Research Institute Bangalore',
     role: 'Software Engineer Intern',
     period: 'May 2021 – Jul 2021',
-    icon: Shield,
-    color: 'from-red-400 to-pink-500',
+    legend: 'Raw sensor input → Preprocessing → UNet → RGB output',
     highlights: [
       'Low-Light Enhancement Pipeline: Built an end-to-end image enhancement pipeline in TensorFlow based on the See in the Dark (SID) paper — replaced the traditional ISP stack with an end-to-end UNet trained from scratch on the SID dataset to directly map raw dark sensor inputs to clean, well-exposed RGB outputs.',
       'Raw Image Preprocessing: Built a preprocessing pipeline for raw sensor data — applying noise removal, brightness amplification, and normalization before model ingestion, ensuring the training distribution accurately reflected real-world low-light capture conditions and improving PSNR across varying darkness levels.'
@@ -60,119 +76,186 @@ const experiences = [
   }
 ];
 
+const N = EXPERIENCES.length;
+const pad = (n) => String(n).padStart(2, '0');
+const yearOf = (period) => period.match(/\d{4}/)[0];
+
+// "Label: detail" -> bold label + detail, only when the prefix really is a short label.
+function splitHighlight(text) {
+  const i = text.indexOf(': ');
+  if (i > 0 && i <= 45 && !/[,.;]/.test(text.slice(0, i))) {
+    return { lead: text.slice(0, i), rest: text.slice(i + 2) };
+  }
+  return { lead: null, rest: text };
+}
+
+function Article({ exp, index }) {
+  return (
+    <>
+      <p className="font-mono text-xs tracking-[0.3em] text-slate-500">
+        {pad(index + 1)} / {pad(N)}
+      </p>
+      <h3 className="mt-3 text-2xl md:text-3xl font-semibold tracking-tight text-slate-100">
+        {exp.company}
+      </h3>
+      <p className="mt-2 font-mono text-xs tracking-[0.2em] uppercase text-amber-400">
+        {exp.role} · {exp.period}
+      </p>
+
+      {exp.metrics && (
+        <dl className="mt-4 grid grid-cols-3 gap-4 border-y border-white/5 py-3">
+          {exp.metrics.map((m) => (
+            <div key={m.label} className="flex flex-col">
+              <dt className="order-2 mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-500">{m.label}</dt>
+              <dd className="font-mono text-xl md:text-2xl font-semibold text-amber-300">{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <ul className="mt-4 space-y-2.5">
+        {exp.highlights.map((h) => {
+          const { lead, rest } = splitHighlight(h);
+          return (
+            <li key={h} className="flex gap-3 text-[13px] leading-[1.55] text-slate-400">
+              <span aria-hidden="true" className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-amber-400/80" />
+              <span>
+                {lead && <strong className="font-medium text-slate-200">{lead}: </strong>}
+                {rest}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
+
+function Legend({ text }) {
+  return (
+    <p className="font-mono text-[11px] leading-relaxed tracking-[0.16em] uppercase text-slate-500">
+      <span className="text-amber-400">Architecture</span>
+      <br />
+      {text}
+    </p>
+  );
+}
+
 export default function ExperienceSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const sectionRef = useRef(null);
+  const panelRef = useRef(null);
+  const fillRef = useRef(null);
+  const [active, setActive] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % experiences.length);
-        setIsAnimating(false);
-      }, 300);
-    }, 6000);
+  useJourneyController({ sectionRef, panelRef, fillRef, count: N, isMobile, onIndex: setActive });
 
-    return () => clearInterval(interval);
-  }, []);
+  const goTo = (i) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const top = rect.top + window.scrollY + (i / (N - 1)) * TAIL_START * (rect.height - window.innerHeight);
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
 
-  const currentExperience = experiences[currentIndex];
-  const detailTilt = useTilt({ max: 10, scale: 1.02 });
+  const stateClass = (i) =>
+    i === active
+      ? 'opacity-100 translate-y-0'
+      : 'opacity-0 translate-y-3 invisible pointer-events-none';
+
+  if (isMobile) {
+    return (
+      <div ref={sectionRef} className="relative z-10 px-6 pt-24">
+        <h2 className="text-3xl font-semibold tracking-tight text-slate-100">Work Experience</h2>
+        {EXPERIENCES.map((exp, i) => (
+          <article key={exp.company} data-journey-article className="pb-20">
+            {/* reserves the upper screen for the 3D checkpoint behind the text */}
+            <div className="h-[30vh]" aria-hidden="true" />
+            <Article exp={exp} index={i} />
+            <div className="mt-6 border-t border-white/5 pt-4">
+              <Legend text={exp.legend} />
+            </div>
+          </article>
+        ))}
+        <div data-journey-tail className="h-[45vh]" aria-hidden="true" />
+      </div>
+    );
+  }
 
   return (
-    <div className="relative py-16 px-6 z-10">
-      <ExperienceAmbient />
-      <div className="relative max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-            Work Experience
-          </h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Building innovative solutions across diverse technology stacks
-          </p>
-        </div>
+    <div ref={sectionRef} className="relative z-10" style={{ height: `${N * 100}vh` }}>
+      <div className="sticky top-0 flex h-screen items-center px-6 pt-16">
+        <div ref={panelRef} className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-12">
+          {/* Left: heading, progress rail, architecture legend (3D checkpoint renders behind) */}
+          <div className="flex max-h-[78vh] flex-col justify-between">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-100">
+              Work Experience
+            </h2>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Experience Timeline */}
-          <div className="space-y-4">
-            {experiences.map((exp, index) => (
-              <div
-                key={exp.company}
-                onClick={() => setCurrentIndex(index)}
-                className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
-                  index === currentIndex
-                    ? 'bg-slate-700/50 border-l-4 border-amber-400'
-                    : 'bg-slate-800/30 hover:bg-slate-700/30 border-l-4 border-transparent hover:border-slate-600'
-                }`}
-              >
-                <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${exp.color} flex items-center justify-center`}>
-                    <exp.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-white">{exp.company}</h3>
-                    <p className="text-slate-400">{exp.role}</p>
-                    <p className="text-sm text-slate-500">{exp.period}</p>
-                  </div>
-                  {index === currentIndex && (
-                    <ChevronRight className="w-5 h-5 text-amber-400" />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Experience Details */}
-          <div className={`transition-all duration-500 ${isAnimating ? 'opacity-0 transform translate-x-8' : 'opacity-100 transform translate-x-0'}`}>
-            <div
-              ref={detailTilt.ref}
-              {...detailTilt.tiltProps}
-              className="bg-slate-800/40 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 shadow-2xl"
-              style={detailTilt.style}
-            >
-              <div className="flex items-center space-x-4 mb-6" data-tilt-depth="30">
-                <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${currentExperience.color} flex items-center justify-center shadow-lg`}>
-                  <currentExperience.icon className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">{currentExperience.company}</h3>
-                  <p className="text-lg text-slate-300">{currentExperience.role}</p>
-                  <div className="flex items-center text-slate-400 mt-1">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    {currentExperience.period}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4" data-tilt-depth="15">
-                {currentExperience.highlights.map((highlight, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-3 animate-slideInFromRight"
-                    style={{
-                      animationDelay: `${index * 0.1}s`
-                    }}
+            <ol className="relative flex w-28 flex-col gap-8" aria-label="Career timeline">
+              <span aria-hidden="true" className="absolute left-[3px] top-2 bottom-2 w-px bg-white/10" />
+              <span
+                ref={fillRef}
+                aria-hidden="true"
+                className="absolute left-[3px] top-2 bottom-2 w-px origin-top bg-amber-400"
+                style={{ transform: 'scaleY(0)' }}
+              />
+              {EXPERIENCES.map((exp, i) => (
+                <li key={exp.company}>
+                  <button
+                    type="button"
+                    onClick={() => goTo(i)}
+                    aria-label={`Go to ${exp.company}`}
+                    aria-current={i === active ? 'step' : undefined}
+                    className="relative block pl-6 text-left"
                   >
-                    <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-slate-300 leading-relaxed">{highlight}</p>
-                  </div>
-                ))}
-              </div>
+                    <span
+                      aria-hidden="true"
+                      className={`absolute left-0 top-1.5 h-[7px] w-[7px] rounded-full transition-colors duration-300 ${
+                        i <= active ? 'bg-amber-400' : 'bg-slate-600'
+                      }`}
+                    />
+                    <span
+                      className={`block font-mono text-xs tracking-[0.25em] transition-colors duration-300 ${
+                        i === active ? 'text-slate-100' : 'text-slate-500'
+                      }`}
+                    >
+                      {pad(i + 1)}
+                    </span>
+                    <span className="block font-mono text-[10px] tracking-[0.2em] text-slate-600">
+                      {yearOf(exp.period)}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+
+            <div className="grid">
+              {EXPERIENCES.map((exp, i) => (
+                <div
+                  key={exp.company}
+                  className={`col-start-1 row-start-1 transition-[opacity,visibility] duration-500 ${
+                    i === active ? 'opacity-100' : 'opacity-0 invisible'
+                  }`}
+                >
+                  <Legend text={exp.legend} />
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Progress Indicators */}
-        <div className="flex justify-center mt-12 space-x-2">
-          {experiences.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'bg-amber-400 scale-125' : 'bg-slate-600 hover:bg-slate-500'
-              }`}
-            />
-          ))}
+          {/* Right: active company (all four stay in the DOM) */}
+          <div className="grid max-h-[calc(100vh-7rem)] self-center overflow-y-auto pr-2">
+            {EXPERIENCES.map((exp, i) => (
+              <article
+                key={exp.company}
+                aria-hidden={i === active ? undefined : 'true'}
+                className={`col-start-1 row-start-1 transition-[opacity,transform,visibility] duration-500 ease-out ${stateClass(i)}`}
+              >
+                <Article exp={exp} index={i} />
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </div>
