@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { capPointSize } from './capPointSize';
 import { useFrame, useThree } from '@react-three/fiber';
 import { experienceStore, projectsStore } from './experienceStore';
 import { SpecVisual, AMBER, CYAN, OFFWHITE, P } from './SpecVisual';
@@ -266,6 +267,7 @@ export default function ExperienceJourney({ pointer, reducedMotion, isMobile, su
             transparent
             opacity={0}
             sizeAttenuation
+            onBeforeCompile={capPointSize}
             depthWrite={false}
             blending={THREE.AdditiveBlending}
           />

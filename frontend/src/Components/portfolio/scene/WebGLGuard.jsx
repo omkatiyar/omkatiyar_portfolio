@@ -14,6 +14,9 @@ export function supportsWebGL() {
       canvas.getContext('webgl2') ||
       canvas.getContext('webgl') ||
       canvas.getContext('experimental-webgl');
+    // Release the probe context right away; browsers cap live contexts and a leaked
+    // one can make the real canvas fail on low-memory phones.
+    gl?.getExtension?.('WEBGL_lose_context')?.loseContext();
     return !!gl;
   } catch (e) {
     return false;
@@ -39,6 +42,7 @@ export class WebGLErrorBoundary extends React.Component {
   componentDidCatch(error) {
     // eslint-disable-next-line no-console
     console.warn('[SystemScene] WebGL unavailable, falling back to static backdrop:', error?.message || error);
+    this.props.onError?.(error);
   }
 
   render() {

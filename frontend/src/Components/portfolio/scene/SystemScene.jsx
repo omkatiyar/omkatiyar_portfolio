@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import SystemCore from './SystemCore';
 import ExperienceJourney from './ExperienceJourney';
@@ -22,6 +22,9 @@ export default function SystemScene() {
   // Set by ExperienceJourney once it owns the shared camera; Hero's rig reads it to step aside.
   const suppress = useRef(false);
   const vignetteRef = useRef(null);
+  // 0 = full quality; 1 = conservative GL settings, tried once if tier 0 fails to create a context
+  // (some Windows/Linux/Android drivers reject antialias + high-performance).
+  const [tier, setTier] = useState(0);
 
   useEffect(() => {
     if (reducedMotion || isMobile) return;
@@ -48,11 +51,15 @@ export default function SystemScene() {
           error boundary is a second line of defense in case the probe
           passes but react-three-fiber's mount effect still throws. */}
       {webglOk && (
-        <WebGLErrorBoundary>
+        <WebGLErrorBoundary key={tier} onError={() => setTier((t) => (t < 1 ? t + 1 : t))}>
           <div className="absolute inset-0">
             <Canvas
-              dpr={[1, isMobile ? 1.5 : 2]}
-              gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+              dpr={tier ? 1 : [1, isMobile ? 1.5 : 2]}
+              gl={tier ? { antialias: false, alpha: true } : { antialias: true, alpha: true, powerPreference: 'high-performance' }}
+              onCreated={({ gl }) => {
+                // Let the browser restore the context after a GPU reset / tab backgrounding.
+                gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault());
+              }}
               camera={{ position: [0, 0, isMobile ? 12.5 : 10.5], fov: 45 }}
               style={{ background: 'transparent' }}
             >

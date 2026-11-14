@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { capPointSize } from './capPointSize';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Line, Html } from '@react-three/drei';
 
@@ -267,6 +268,7 @@ export default function SystemCore({ pointer, scrollProgress, reducedMotion, isM
           transparent
           opacity={0.35}
           sizeAttenuation
+          onBeforeCompile={capPointSize}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />

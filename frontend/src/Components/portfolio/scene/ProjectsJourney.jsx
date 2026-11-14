@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { capPointSize } from './capPointSize';
 import { useFrame, useThree } from '@react-three/fiber';
 import { projectsStore, contactStore, experienceStore } from './experienceStore';
 import { AMBER, CYAN } from './SpecVisual';
@@ -250,6 +251,7 @@ export default function ProjectsJourney({ pointer, reducedMotion, isMobile, supp
             transparent
             opacity={0}
             sizeAttenuation
+            onBeforeCompile={capPointSize}
             depthWrite={false}
             blending={THREE.AdditiveBlending}
           />
